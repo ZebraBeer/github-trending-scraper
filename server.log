@@ -7,8 +7,11 @@
  * Running on http://127.0.0.1:51780
  * Running on http://172.17.0.2:51780
 [33mPress CTRL+C to quit[0m
-/workspace/github_trending/app.py:57: LegacyAPIWarning: The Query.get() method is considered legacy as of the 1.x series of SQLAlchemy and becomes a legacy construct in 2.0. The method is now available as Session.get() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
-  repo = session.query(Repository).get(repo_id)
+172.17.0.1 - - [08/Jun/2025 18:32:19] "[33mGET /apple-touch-icon-precomposed.png HTTP/1.1[0m" 404 -
+172.17.0.1 - - [08/Jun/2025 18:32:19] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+172.17.0.1 - - [08/Jun/2025 18:32:19] "[33mGET /apple-touch-icon.png HTTP/1.1[0m" 404 -
+172.17.0.1 - - [08/Jun/2025 18:32:19] "GET / HTTP/1.1" 200 -
+tory).get(repo_id)
 127.0.0.1 - - [08/Jun/2025 17:32:12] "GET /repository/1 HTTP/1.1" 200 -
 127.0.0.1 - - [08/Jun/2025 17:32:21] "GET / HTTP/1.1" 200 -
 127.0.0.1 - - [08/Jun/2025 17:33:02] "GET /?search=scrapy HTTP/1.1" 200 -
@@ -16,3 +19,7 @@
 172.17.0.1 - - [08/Jun/2025 18:09:11] "GET / HTTP/1.1" 200 -
 127.0.0.1 - - [08/Jun/2025 18:21:17] "GET / HTTP/1.1" 200 -
 172.17.0.1 - - [08/Jun/2025 18:24:35] "GET / HTTP/1.1" 200 -
+172.17.0.1 - - [08/Jun/2025 18:32:19] "[33mGET /apple-touch-icon-precomposed.png HTTP/1.1[0m" 404 -
+172.17.0.1 - - [08/Jun/2025 18:32:19] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+172.17.0.1 - - [08/Jun/2025 18:32:19] "[33mGET /apple-touch-icon.png HTTP/1.1[0m" 404 -
+172.17.0.1 - - [08/Jun/2025 18:32:19] "GET / HTTP/1.1" 200 -
