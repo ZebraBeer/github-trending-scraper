@@ -84,5 +84,7 @@ if __name__ == '__main__':
     scheduler_thread = threading.Thread(target=run_scheduler, daemon=True)
     scheduler_thread.start()
 
-    # Run on port 57597
-    app.run(host='0.0.0.0', port=51780)
+    # Get the port from environment variable or use default
+    import os
+    port = int(os.environ.get('PORT', 54035))
+    app.run(host='0.0.0.0', port=port)

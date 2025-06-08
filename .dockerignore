@@ -1,0 +1,43 @@
+# Exclude Python cache
+__pycache__
+*.py[cod]
+
+# Exclude virtual environment
+venv
+ENV
+env.bak
+env.*.bak
+
+# Exclude log files
+*.log
+logs
+log
+
+# Exclude temporary files
+*.tmp
+*.swp
+.TMP*
+
+# Exclude database file (will be created at runtime)
+github_trending.db
+db
+data
+
+# Exclude Docker-related files
+Dockerfile
+.dockerignore
+docker-compose.yml
+
+# Exclude IDE and editor files
+.vscode
+.idea
+.sublime-project
+.sublime-workspace
+
+# Exclude Git files
+.git
+.gitignore
+
+# Exclude Mac/Windows specific files
+.DS_Store
+Thumbs.db

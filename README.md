@@ -12,6 +12,31 @@ This is a web application that scrapes and displays trending repositories from G
 
 ## Setup Instructions
 
+### Using Docker Compose (Recommended)
+
+The easiest way to run this application is using Docker Compose:
+
+1. **Clone the repository:**
+
+   ```bash
+   git clone https://github.com/openhandsai/github-trending-scraper.git
+   cd github-trending-scraper
+   ```
+
+2. **Run with Docker Compose:**
+
+   ```bash
+   docker-compose up -d
+   ```
+
+3. **Access the application:**
+
+   Open your browser and go to http://localhost:54035
+
+### Manual Setup (Without Docker)
+
+If you prefer not to use Docker, follow these steps:
+
 1. **Clone the repository:**
 
    ```bash
@@ -37,12 +62,12 @@ This is a web application that scrapes and displays trending repositories from G
 
    ```bash
    export FLASK_APP=app.py
-   flask run --host=0.0.0.0 --port=51780
+   flask run --host=0.0.0.0 --port=54035
    ```
 
 5. **Access the application:**
 
-   Open your browser and go to http://localhost:51780
+   Open your browser and go to http://localhost:54035
 
 ## Background Tasks
 
@@ -54,14 +79,31 @@ You can manually run the scheduled tasks for testing:
 python -c "from app.scheduler import run_scheduled_tasks; run_scheduled_tasks()"
 ```
 
+## How It Works
+
+1. **Data Scraping**: The application uses web scrapers to extract data from GitHub's trending page.
+2. **Database Storage**: Repository information is stored in a SQLite database for persistence.
+3. **Scheduling**: A scheduler periodically updates the repository data to keep it current.
+4. **Web Interface**: A Flask-based web interface displays the trending repositories with filtering and search capabilities.
+
 ## Project Structure
 
 - `app.py`: Main Flask application
 - `app/models/`: Database models (Repository, Trend)
+  - `repository.py`: Repository model definition
+  - `trend.py`: Trend data model definition
 - `app/scrapers/`: Web scrapers to extract data from GitHub
+  - `github_scraper.py`: Main scraper implementation
 - `app/templates/`: HTML templates for the web interface
+  - `base.html`: Base template with common elements
+  - `index.html`: Home page template
+  - `repository_detail.html`: Detailed repository view template
+- `app/scheduler.py`: Scheduling logic to periodically update data
 - `init_db.py`: Script to initialize the database
 - `requirements.txt`: Python dependencies
+- `Dockerfile`: Docker configuration for containerization
+- `.dockerignore`: Files and directories to exclude from Docker build
+- `docker-compose.yml`: Docker Compose configuration for easy deployment
 
 ## License
 

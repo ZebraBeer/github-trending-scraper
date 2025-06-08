@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  github_trending_scraper:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: github_trending_scraper
+    ports:
+      - "54035:54035" # Map host port to container port
+    volumes:
+      - db_data:/app/db  # Persist database data
+    environment:
+      - PORT=54035
+
+volumes:
+  db_data:
