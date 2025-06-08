@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Trending Repositories</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { padding: 20px; }
+        .repo-item { margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .repo-name a { font-weight: bold; color: #007bff; text-decoration: none; }
+        .repo-name a:hover { text-decoration: underline; }
+        .repo-desc { margin-top: 5px; color: #666; }
+        .repo-stats span { margin-right: 15px; font-size: 0.9em; }
+        .filter-form { margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mb-4">GitHub Trending Repositories (Weekly)</h1>
+
+        <form method="GET" action="{{ url_for('index') }}" class="filter-form row">
+            <div class="col-md-5">
+                <input type="text" name="search" class="form-control" placeholder="Search by repository name or owner" value="{{ request.args.get('search', '') }}">
+            </div>
+            <div class="col-md-3">
+                <select name="language" class="form-control">
+                    <option value="">All Languages</option>
+                    {% for language in languages %}
+                        <option value="{{ language }}" {% if language == request.args.get('language') %}selected{% endif %}>{{ language }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary">Filter</button>
+            </div>
+            <div class="col-md-2 text-right">
+                <a href="{{ url_for('index') }}" class="btn btn-secondary">Reset Filters</a>
+            </div>
+        </form>
+
+        {% if repositories %}
+            {% for repo in repositories %}
+                <div class="repo-item row">
+                    <div class="col-md-10">
+                        <div class="repo-name">
+                            <a href="{{ url_for('repository_detail', repo_id=repo.id) }}">{{ repo.name }}</a>
+                            <span class="text-muted"> (</span>
+                            <a href="{{ repo.url }}" target="_blank">GitHub</a>
+                            <span class="text-muted">)</span>
+                        </div>
+                        <div class="repo-desc">{{ repo.description }}</div>
+                    </div>
+                    <div class="col-md-2 text-right">
+                        <div class="repo-stats">
+                            <span><strong>Stars:</strong> {{ repo.stars }}</span>
+                            <br>
+                            <span><strong>Forks:</strong> {{ repo.forks }}</span>
+                            <br>
+                            <span><strong>Language:</strong> {{ repo.language or 'Not specified' }}</span>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No repositories found matching your criteria.</p>
+        {% endif %}
+
+        <div class="text-center mt-4">
+            <a href="https://github.com/trending?since=weekly" target="_blank" class="btn btn-secondary">View on GitHub</a>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
