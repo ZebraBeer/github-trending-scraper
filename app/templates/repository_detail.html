@@ -28,6 +28,7 @@
             <div class="col-md-8 offset-md-2">
                 <a href="{{ url_for('index') }}" class="btn btn-secondary mb-1">Back to list</a>
 <a href="{{ url_for('trending_history') }}" class="btn btn-info mb-3 ml-2">View Trending History</a>
+<a href="{{ url_for('trending_compare', repo1=repo.id) }}" class="btn btn-warning mb-3 ml-2">Compare with Other Repo</a>
 
                 <div class="repo-header card p-4">
                     <div class="repo-name"><a href="{{ repo.url }}" target="_blank">{{ repo.name }}</a></div>

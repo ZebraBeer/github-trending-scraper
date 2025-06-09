@@ -79,12 +79,63 @@ def run_tasks():
     run_scheduled_tasks()
     return "Scheduled tasks executed", 200
 
+@app.route('/trending/compare')
+def trending_compare():
+    session = SessionLocal()
+    repo_id1 = request.args.get('repo1')
+    repo_id2 = request.args.get('repo2')
+
+    # Get repository details
+    repo1 = None
+    repo2 = None
+
+    if repo_id1:
+        repo1 = session.query(Repository).get(repo_id1)
+        if not repo1:
+            return "Repository 1 not found", 404
+
+    if repo_id2:
+        repo2 = session.query(Repository).get(repo_id2)
+        if not repo2:
+            return "Repository 2 not found", 404
+
+    # Get trend data for both repositories
+    trends1 = []
+    dates = []
+
+    if repo1:
+        trends1 = session.query(Trend).filter_by(repository_id=repo1.id).order_by(Trend.date.asc()).all()
+        dates = [trend.date.strftime('%Y-%m-%d') for trend in trends1]
+
+    trends2 = []
+    stars2 = []
+
+    if repo2:
+        trends2 = session.query(Trend).filter_by(repository_id=repo2.id).order_by(Trend.date.asc()).all()
+        stars2 = [trend.stars if trend is not None else 0 for trend in trends2]
+
+    # Get all repositories for dropdown selection
+    repos = session.query(Repository).all()
+
+    session.close()
+
+    return render_template('compare.html',
+                          repo1=repo1,
+                          repo2=repo2,
+                          dates=dates,
+                          stars1=[trend.stars if trend is not None else 0 for trend in trends1],
+                          stars2=stars2,
+                          repositories=repos)
+
 @app.route('/trending/history')
 def trending_history():
     session = SessionLocal()
     selected_date = request.args.get('date')
+    search_query = request.args.get('search', '')
+    language_filter = request.args.get('language', '')
+    min_stars = request.args.get('min_stars', '')
 
-    # If a specific date is selected, filter by that date
+    # Build base query
     if selected_date:
         try:
             # Parse the date from string to datetime.date object
@@ -94,11 +145,14 @@ def trending_history():
             query = session.query(Repository, Trend).join(
                 Trend, Repository.id == Trend.repository_id
             ).filter(Trend.date == selected_date)
-
-            repositories = query.all()
         except ValueError:
             # If date format is invalid, show all repositories with trends
-            repositories = []
+            return render_template('history.html',
+                                  repositories=[],
+                                  selected_date=None,
+                                  date_options=[],
+                                  search_query=search_query,
+                                  languages=[])
     else:
         # Get the most recent trend data for each repository
         subquery = session.query(
@@ -113,15 +167,43 @@ def trending_history():
                       (Trend.date == subquery.c.max_date)
         )
 
-        repositories = query.all()
+    # Apply search filter if provided
+    if search_query:
+        query = query.filter(
+            (Repository.name.ilike(f"%{search_query}%")) |
+            (Repository.description.ilike(f"%{search_query}%"))
+        )
+
+    # Apply language filter if provided
+    if language_filter:
+        query = query.filter(Repository.language == language_filter)
+
+    # Apply minimum stars filter if provided
+    if min_stars:
+        try:
+            min_stars_int = int(min_stars)
+            query = query.filter(Trend.stars >= min_stars_int)
+        except ValueError:
+            pass  # Invalid value, ignore
+
+    repositories = query.all()
 
     # Get all unique dates with trend data for the dropdown filter
     dates = session.query(Trend.date.distinct()).order_by(Trend.date.desc()).all()
     date_options = [date[0] for date in dates]
 
+    # Get unique languages for filter dropdown
+    languages = session.query(Repository.language).distinct().all()
+    languages = sorted([lang[0] for lang in languages if lang[0] is not None])
+
     session.close()
 
-    return render_template('history.html', repositories=repositories, selected_date=selected_date, date_options=date_options)
+    return render_template('history.html',
+                          repositories=repositories,
+                          selected_date=selected_date,
+                          date_options=date_options,
+                          search_query=search_query,
+                          languages=languages)
 
 import threading
 
@@ -136,5 +218,5 @@ if __name__ == '__main__':
 
     # Get the port from environment variable or use default
     import os
-    port = int(os.environ.get('PORT', 56568))  # Using a different port
-    app.run(host='0.0.0.0', port=port)
+    port = int(os.environ.get('PORT', 8000))  # Using a different port
+    app.run(host='0.0.0.0', port=port, debug=False)

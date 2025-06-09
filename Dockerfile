@@ -18,8 +18,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy local code to the container image
 COPY . /app
 
-# Make port 54035 available for the app
-EXPOSE 54035
+# Make port 8000 available for the app
+EXPOSE 8000
 
 # Run the application
 CMD ["python", "app.py"]

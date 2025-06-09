@@ -11,6 +11,9 @@ This is a web application that scrapes and displays trending repositories from G
 - Option to view current and past weekly trending lists:
   - View most recent trends
   - Filter by specific dates to see which repositories were trending on those days
+  - Advanced filtering options in history page (language, minimum stars)
+  - Search functionality within historical data
+- Side-by-side comparison of trend charts for different repositories
 
 ## Setup Instructions
 
@@ -33,7 +36,7 @@ The easiest way to run this application is using Docker Compose:
 
 3. **Access the application:**
 
-   Open your browser and go to http://localhost:54035
+   Open your browser and go to http://localhost:8000
 
 ### Manual Setup (Without Docker)
 
@@ -64,12 +67,12 @@ If you prefer not to use Docker, follow these steps:
 
    ```bash
    export FLASK_APP=app.py
-   flask run --host=0.0.0.0 --port=54035
+   flask run --host=0.0.0.0 --port=8000
    ```
 
 5. **Access the application:**
 
-   Open your browser and go to http://localhost:54035
+   Open your browser and go to http://localhost:8000
 
 ## Background Tasks
 
@@ -100,6 +103,8 @@ python -c "from app.scheduler import run_scheduled_tasks; run_scheduled_tasks()"
   - `base.html`: Base template with common elements
   - `index.html`: Home page template
   - `repository_detail.html`: Detailed repository view template
+  - `history.html`: Template for viewing historical trending data
+  - `compare.html`: Template for comparing trends between repositories
 - `app/scheduler.py`: Scheduling logic to periodically update data
 - `init_db.py`: Script to initialize the database
 - `requirements.txt`: Python dependencies

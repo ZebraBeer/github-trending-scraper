@@ -7,11 +7,11 @@ services:
       dockerfile: Dockerfile
     container_name: github_trending_scraper
     ports:
-      - "54035:54035" # Map host port to container port
+      - "8000:8000" # Map host port to container port
     volumes:
       - db_data:/app/db  # Persist database data
     environment:
-      - PORT=54035
+      - PORT=8000
 
 volumes:
   db_data:

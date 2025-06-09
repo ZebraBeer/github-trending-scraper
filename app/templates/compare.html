@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Trending Comparison - {{ repo1.name if repo1 else 'Repository 1' }} vs {{ repo2.name if repo2 else 'Repository 2' }}</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { padding: 20px; }
+        .repo-item { margin-bottom: 15px; padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
+        .repo-name a { font-weight: bold; color: #007bff; text-decoration: none; }
+        .repo-name a:hover { text-decoration: underline; }
+        .repo-desc { margin-top: 5px; color: #666; }
+        .repo-stats span { margin-right: 15px; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mb-4">GitHub Trending Comparison</h1>
+
+        <form method="GET" action="{{ url_for('trending_compare') }}" class="filter-form mb-4 row">
+            <div class="col-md-5">
+                <select name="repo1" class="form-control">
+                    <option value="">Select Repository 1</option>
+                    {% for repo in repositories %}
+                        <option value="{{ repo.id }}" {% if repo == repo1 %}selected{% endif %}>
+                            {{ repo.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-5">
+                <select name="repo2" class="form-control">
+                    <option value="">Select Repository 2</option>
+                    {% for repo in repositories %}
+                        <option value="{{ repo.id }}" {% if repo == repo2 %}selected{% endif %}>
+                            {{ repo.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary">Compare</button>
+            </div>
+        </form>
+
+        {% if repo1 and repo2 %}
+            <h2>Trending Comparison: {{ repo1.name }} vs {{ repo2.name }}</h2>
+
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <h3>{{ repo1.name }}</h3>
+                    <p>{{ repo1.description }}</p>
+                    <a href="{{ url_for('repository_detail', repo_id=repo1.id) }}">View Details</a>
+                </div>
+                <div class="col-md-6">
+                    <h3>{{ repo2.name }}</h3>
+                    <p>{{ repo2.description }}</p>
+                    <a href="{{ url_for('repository_detail', repo_id=repo2.id) }}">View Details</a>
+                </div>
+            </div>
+
+            <canvas id="trendChart" width="400" height="200"></canvas>
+
+            <script>
+                document.addEventListener("DOMContentLoaded", function() {
+                    const ctx = document.getElementById('trendChart').getContext('2d');
+                    const trendChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: {{ dates|tojson }},
+                            datasets: [
+                                {
+                                    label: '{{ repo1.name }} Stars',
+                                    data: {{ stars1|tojson }},
+                                    borderColor: 'rgba(75, 192, 192, 1)',
+                                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                    fill: false,
+                                },
+                                {
+                                    label: '{{ repo2.name }} Stars',
+                                    data: {{ stars2|tojson }},
+                                    borderColor: 'rgba(255, 99, 132, 1)',
+                                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                    fill: false,
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                                x: {
+                                    title: {
+                                        display: true,
+                                        text: 'Date'
+                                    }
+                                },
+                                y: {
+                                    beginAtZero: true,
+                                    title: {
+                                        display: true,
+                                        text: 'Stars'
+                                    }
+                                }
+                            }
+                        }
+                    });
+                });
+            </script>
+        {% elif not repo1 and not repo2 %}
+            <p>Please select two repositories to compare.</p>
+        {% else %}
+            <p>Please select the second repository to complete the comparison.</p>
+        {% endif %}
+
+        <div class="text-right mt-4">
+            <a href="{{ url_for('trending_history') }}" class="btn btn-secondary">View History</a>
+            <a href="{{ url_for('index') }}" class="btn btn-secondary ml-2">Back to Current Trending</a>
+        </div>
+
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -4,48 +4,12 @@
  * Debug mode: off
 [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
  * Running on all addresses (0.0.0.0)
- * Running on http://127.0.0.1:56568
- * Running on http://172.17.0.2:56568
+ * Running on http://127.0.0.1:8000
+ * Running on http://172.17.0.2:8000
 [33mPress CTRL+C to quit[0m
-127.0.0.1 - - [09/Jun/2025 17:07:28] "GET /trending/history HTTP/1.1" 200 -
-Running all pending scheduled tasks...
-Starting scheduled scrape...
-Found 15 repositories, filtering out 0 with 0 stars
-Successfully updated database with 15 repositories
-Scrape completed successfully.
-127.0.0.1 - - [09/Jun/2025 17:07:49] "GET /run_tasks HTTP/1.1" 200 -
-127.0.0.1 - - [09/Jun/2025 17:08:09] "GET /trending/history HTTP/1.1" 200 -
-172.17.0.1 - - [09/Jun/2025 17:08:36] "GET / HTTP/1.1" 200 -
-172.17.0.1 - - [09/Jun/2025 17:08:44] "GET /trending/history HTTP/1.1" 200 -
-172.17.0.1 - - [09/Jun/2025 17:08:47] "GET / HTTP/1.1" 200 -
-172.17.0.1 - - [09/Jun/2025 17:08:49] "GET /trending/history HTTP/1.1" 200 -
-172.17.0.1 - - [09/Jun/2025 17:08:50] "GET / HTTP/1.1" 200 -
-172.17.0.1 - - [09/Jun/2025 17:08:51] "GET /trending/history HTTP/1.1" 200 -
-172.17.0.1 - - [09/Jun/2025 17:08:52] "GET / HTTP/1.1" 200 -
-172.17.0.1 - - [09/Jun/2025 17:08:54] "GET /trending/history HTTP/1.1" 200 -
-172.17.0.1 - - [09/Jun/2025 17:08:55] "GET / HTTP/1.1" 200 -
-172.17.0.1 - - [09/Jun/2025 17:08:56] "GET /trending/history HTTP/1.1" 200 -
-172.17.0.1 - - [09/Jun/2025 17:08:58] "GET / HTTP/1.1" 200 -
-172.17.0.1 - - [09/Jun/2025 17:09:12] "GET /trending/history HTTP/1.1" 200 -
-172.17.0.1 - - [09/Jun/2025 17:09:25] "GET / HTTP/1.1" 200 -
-172.17.0.1 - - [09/Jun/2025 17:10:13] "GET /trending/history HTTP/1.1" 200 -
-/workspace/github-trending-scraper/app.py:57: LegacyAPIWarning: The Query.get() method is considered legacy as of the 1.x series of SQLAlchemy and becomes a legacy construct in 2.0. The method is now available as Session.get() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
-  repo = session.query(Repository).get(repo_id)
-172.17.0.1 - - [09/Jun/2025 17:10:26] "GET /repository/12 HTTP/1.1" 200 -
-172.17.0.1 - - [09/Jun/2025 17:10:31] "GET /trending/history HTTP/1.1" 200 -
-172.17.0.1 - - [09/Jun/2025 17:10:39] "GET / HTTP/1.1" 200 -
-172.17.0.1 - - [09/Jun/2025 17:11:06] "GET /?search=onlook&language= HTTP/1.1" 200 -
-172.17.0.1 - - [09/Jun/2025 17:11:13] "GET /trending/history HTTP/1.1" 200 -
-172.17.0.1 - - [09/Jun/2025 17:11:15] "GET / HTTP/1.1" 200 -
-172.17.0.1 - - [09/Jun/2025 17:11:17] "GET /trending/history HTTP/1.1" 200 -
-172.17.0.1 - - [09/Jun/2025 17:13:51] "GET /trending/history HTTP/1.1" 200 -
-172.17.0.1 - - [09/Jun/2025 17:13:51] "[33mGET /apple-touch-icon-precomposed.png HTTP/1.1[0m" 404 -
-172.17.0.1 - - [09/Jun/2025 17:13:51] "[33mGET /apple-touch-icon.png HTTP/1.1[0m" 404 -
-172.17.0.1 - - [09/Jun/2025 17:13:51] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
-172.17.0.1 - - [09/Jun/2025 17:18:13] "GET / HTTP/1.1" 200 -
-172.17.0.1 - - [09/Jun/2025 17:18:18] "GET /trending/history HTTP/1.1" 200 -
-172.17.0.1 - - [09/Jun/2025 17:18:24] "GET / HTTP/1.1" 200 -
-172.17.0.1 - - [09/Jun/2025 17:18:35] "GET / HTTP/1.1" 200 -
-172.17.0.1 - - [09/Jun/2025 17:18:35] "[33mGET /apple-touch-icon-precomposed.png HTTP/1.1[0m" 404 -
-172.17.0.1 - - [09/Jun/2025 17:18:35] "[33mGET /apple-touch-icon.png HTTP/1.1[0m" 404 -
-172.17.0.1 - - [09/Jun/2025 17:18:35] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+/workspace/github-trending-scraper/app.py:93: LegacyAPIWarning: The Query.get() method is considered legacy as of the 1.x series of SQLAlchemy and becomes a legacy construct in 2.0. The method is now available as Session.get() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+  repo1 = session.query(Repository).get(repo_id1)
+/workspace/github-trending-scraper/app.py:98: LegacyAPIWarning: The Query.get() method is considered legacy as of the 1.x series of SQLAlchemy and becomes a legacy construct in 2.0. The method is now available as Session.get() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+  repo2 = session.query(Repository).get(repo_id2)
+127.0.0.1 - - [09/Jun/2025 19:01:55] "GET /trending/compare?repo1=2&repo2=3 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Jun/2025 19:19:59] "GET /trending/compare?repo1=2&repo2=3 HTTP/1.1" 200 -
