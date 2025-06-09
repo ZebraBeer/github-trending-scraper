@@ -79,6 +79,50 @@ def run_tasks():
     run_scheduled_tasks()
     return "Scheduled tasks executed", 200
 
+@app.route('/trending/history')
+def trending_history():
+    session = SessionLocal()
+    selected_date = request.args.get('date')
+
+    # If a specific date is selected, filter by that date
+    if selected_date:
+        try:
+            # Parse the date from string to datetime.date object
+            selected_date = datetime.strptime(selected_date, '%Y-%m-%d').date()
+
+            # Get repositories and their trend data for the selected date
+            query = session.query(Repository, Trend).join(
+                Trend, Repository.id == Trend.repository_id
+            ).filter(Trend.date == selected_date)
+
+            repositories = query.all()
+        except ValueError:
+            # If date format is invalid, show all repositories with trends
+            repositories = []
+    else:
+        # Get the most recent trend data for each repository
+        subquery = session.query(
+            Trend.repository_id,
+            func.max(Trend.date).label('max_date')
+        ).group_by(Trend.repository_id).subquery()
+
+        query = session.query(Repository, Trend).join(
+            Trend, Repository.id == Trend.repository_id
+        ).join(
+            subquery, (Trend.repository_id == subquery.c.repository_id) &
+                      (Trend.date == subquery.c.max_date)
+        )
+
+        repositories = query.all()
+
+    # Get all unique dates with trend data for the dropdown filter
+    dates = session.query(Trend.date.distinct()).order_by(Trend.date.desc()).all()
+    date_options = [date[0] for date in dates]
+
+    session.close()
+
+    return render_template('history.html', repositories=repositories, selected_date=selected_date, date_options=date_options)
+
 import threading
 
 def run_scheduler():
@@ -92,5 +136,5 @@ if __name__ == '__main__':
 
     # Get the port from environment variable or use default
     import os
-    port = int(os.environ.get('PORT', 54035))  # Changed back to original port
+    port = int(os.environ.get('PORT', 56568))  # Using a different port
     app.run(host='0.0.0.0', port=port)

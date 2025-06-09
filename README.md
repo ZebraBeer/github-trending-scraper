@@ -6,9 +6,11 @@ This is a web application that scrapes and displays trending repositories from G
 
 - Periodically scrapes the current list of trending repositories from GitHub
 - Displays trending repositories with filtering by language and stars
-- Detailed page for each repository including historical trend charts
+- Detailed page for each repository including historical trend charts (stars over time)
 - Search functionality by repository name or owner
-- Option to view current and past weekly trending lists
+- Option to view current and past weekly trending lists:
+  - View most recent trends
+  - Filter by specific dates to see which repositories were trending on those days
 
 ## Setup Instructions
 
