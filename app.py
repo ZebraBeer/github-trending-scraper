@@ -66,12 +66,18 @@ def repository_detail(repo_id):
     # Convert to dictionaries for charting
     trend_data = {
         'dates': [trend.date.strftime('%Y-%m-%d') for trend in trends],
-        'ranks': [trend.rank for trend in trends]
+        'stars': [trend.stars if trend.stars is not None else 0 for trend in trends]
     }
 
     session.close()
 
     return render_template('repository_detail.html', repo=repo, trend_data=trend_data)
+
+@app.route('/run_tasks')
+def run_tasks():
+    from app.scheduler import run_scheduled_tasks
+    run_scheduled_tasks()
+    return "Scheduled tasks executed", 200
 
 import threading
 
@@ -86,5 +92,5 @@ if __name__ == '__main__':
 
     # Get the port from environment variable or use default
     import os
-    port = int(os.environ.get('PORT', 54035))
+    port = int(os.environ.get('PORT', 54035))  # Changed back to original port
     app.run(host='0.0.0.0', port=port)

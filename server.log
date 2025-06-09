@@ -1,25 +1,30 @@
-/workspace/github_trending/app.py:16: MovedIn20Warning: The ``declarative_base()`` function is now available as sqlalchemy.orm.declarative_base(). (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+/workspace/github-trending-scraper/app.py:16: MovedIn20Warning: The ``declarative_base()`` function is now available as sqlalchemy.orm.declarative_base(). (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
   Base = declarative_base()
  * Serving Flask app 'app'
  * Debug mode: off
 [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
  * Running on all addresses (0.0.0.0)
- * Running on http://127.0.0.1:51780
- * Running on http://172.17.0.2:51780
+ * Running on http://127.0.0.1:54035
+ * Running on http://172.17.0.2:54035
 [33mPress CTRL+C to quit[0m
-172.17.0.1 - - [08/Jun/2025 18:32:19] "[33mGET /apple-touch-icon-precomposed.png HTTP/1.1[0m" 404 -
-172.17.0.1 - - [08/Jun/2025 18:32:19] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
-172.17.0.1 - - [08/Jun/2025 18:32:19] "[33mGET /apple-touch-icon.png HTTP/1.1[0m" 404 -
-172.17.0.1 - - [08/Jun/2025 18:32:19] "GET / HTTP/1.1" 200 -
-tory).get(repo_id)
-127.0.0.1 - - [08/Jun/2025 17:32:12] "GET /repository/1 HTTP/1.1" 200 -
-127.0.0.1 - - [08/Jun/2025 17:32:21] "GET / HTTP/1.1" 200 -
-127.0.0.1 - - [08/Jun/2025 17:33:02] "GET /?search=scrapy HTTP/1.1" 200 -
-127.0.0.1 - - [08/Jun/2025 17:33:14] "GET /?language=Python HTTP/1.1" 200 -
-172.17.0.1 - - [08/Jun/2025 18:09:11] "GET / HTTP/1.1" 200 -
-127.0.0.1 - - [08/Jun/2025 18:21:17] "GET / HTTP/1.1" 200 -
-172.17.0.1 - - [08/Jun/2025 18:24:35] "GET / HTTP/1.1" 200 -
-172.17.0.1 - - [08/Jun/2025 18:32:19] "[33mGET /apple-touch-icon-precomposed.png HTTP/1.1[0m" 404 -
-172.17.0.1 - - [08/Jun/2025 18:32:19] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
-172.17.0.1 - - [08/Jun/2025 18:32:19] "[33mGET /apple-touch-icon.png HTTP/1.1[0m" 404 -
-172.17.0.1 - - [08/Jun/2025 18:32:19] "GET / HTTP/1.1" 200 -
+/workspace/github-trending-scraper/app.py:57: LegacyAPIWarning: The Query.get() method is considered legacy as of the 1.x series of SQLAlchemy and becomes a legacy construct in 2.0. The method is now available as Session.get() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+  repo = session.query(Repository).get(repo_id)
+127.0.0.1 - - [09/Jun/2025 12:28:48] "GET /repository/1 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Jun/2025 12:29:20] "GET /repository/1 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Jun/2025 12:29:42] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [09/Jun/2025 12:30:22] "GET /repository/2 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Jun/2025 12:37:06] "GET /repository/3 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Jun/2025 12:37:24] "GET /repository/4 HTTP/1.1" 200 -
+Running all pending scheduled tasks...
+Starting scheduled scrape...
+Found 15 repositories, filtering out 0 with 0 stars
+Successfully updated database with 15 repositories
+Scrape completed successfully.
+127.0.0.1 - - [09/Jun/2025 12:37:40] "GET /run_tasks HTTP/1.1" 200 -
+127.0.0.1 - - [09/Jun/2025 12:38:33] "GET /repository/1 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Jun/2025 12:38:56] "GET /repository/1 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Jun/2025 12:39:16] "GET /repository/1 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Jun/2025 12:39:38] "GET /repository/2 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Jun/2025 12:40:02] "GET /repository/2 HTTP/1.1" 200 -
+172.17.0.1 - - [09/Jun/2025 12:52:54] "GET / HTTP/1.1" 200 -
+172.17.0.1 - - [09/Jun/2025 12:52:56] "GET /repository/1 HTTP/1.1" 200 -

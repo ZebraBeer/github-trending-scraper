@@ -15,7 +15,11 @@
         .repo-name a:hover { text-decoration: underline; }
         .repo-desc { margin-top: 5px; color: #666; }
         .repo-stats span { margin-right: 20px; font-size: 0.9em; }
-        canvas { max-width: 100% !important; }
+        canvas {
+            max-width: 100% !important;
+            height: 400px !important; /* Set a fixed height for the chart */
+            width: 100% !important;   /* Ensure it takes full width of container */
+        }
     </style>
 </head>
 <body>
@@ -45,11 +49,12 @@
                             data: {
                                 labels: {{ trend_data.dates|tojson }},
                                 datasets: [{
-                                    label: 'Trending Rank',
-                                    data: {{ trend_data.ranks|tojson }},
-                                    borderColor: '#007bff',
-                                    backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                                    label: 'Stars',
+                                    data: {{ trend_data.stars|tojson }},
+                                    borderColor: '#28a745',
+                                    backgroundColor: 'rgba(40, 167, 69, 0.2)',
                                     fill: true,
+                                    tension: 0.3
                                 }]
                             },
                             options: {
@@ -58,7 +63,7 @@
                                 plugins: {
                                     title: {
                                         display: true,
-                                        text: 'Rank Over Time (Lower is better)'
+                                        text: 'Stars Over Time'
                                     }
                                 },
                                 scales: {
@@ -73,9 +78,9 @@
                                         display: true,
                                         title: {
                                             display: true,
-                                            text: 'Rank'
+                                            text: 'Number of Stars'
                                         },
-                                        reverse: true
+                                        beginAtZero: true
                                     }
                                 }
                             }

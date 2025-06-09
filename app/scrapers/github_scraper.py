@@ -4,7 +4,8 @@ from datetime import datetime
 from sqlalchemy.orm import Session
 
 # Import models from the app package
-from app import Repository, Trend
+from app.models.repository import Repository
+from app.models.trend import Trend
 
 GITHUB_TRENDING_URL = "https://github.com/trending?since=weekly"
 
@@ -185,7 +186,7 @@ def update_database_from_scrape(db: Session):
         if repo.id:  # Only add trend if repository has been properly saved
             trend = Trend(
                 repository_id=repo.id,
-                rank=repo_data['rank'],
+                stars=repo_data['stars'],
                 date=today
             )
             db.add(trend)
