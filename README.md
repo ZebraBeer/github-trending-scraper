@@ -24,7 +24,7 @@ The easiest way to run this application is using Docker Compose:
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/openhandsai/github-trending-scraper.git
+   git clone https://github.com/ZebraBeer/github-trending-scraper.git
    cd github-trending-scraper
    ```
 
@@ -45,7 +45,7 @@ If you prefer not to use Docker, follow these steps:
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/openhandsai/github-trending-scraper.git
+   git clone https://github.com/ZebraBeer/github-trending-scraper.git
    cd github-trending-scraper
    ```
 
@@ -65,18 +65,29 @@ If you prefer not to use Docker, follow these steps:
 
 4. **Run the application:**
 
+   You can run the application using Flask's built-in server or directly with Python.
+   The default port is 8000, but you can specify a different port using the PORT environment variable.
+
+   Using Flask CLI:
    ```bash
    export FLASK_APP=app.py
    flask run --host=0.0.0.0 --port=8000
    ```
 
+   Or directly with Python:
+   ```bash
+   python app.py
+   ```
+
 5. **Access the application:**
 
-   Open your browser and go to http://localhost:8000
+   Open your browser and go to http://localhost:8000 (or the port you specified)
 
 ## Background Tasks
 
 The application uses a scheduler to periodically update repository data. The scheduler runs every day at midnight by default.
+
+When you start the application, the scheduler runs in a separate thread automatically. You don't need to manually start it.
 
 You can manually run the scheduled tasks for testing:
 
@@ -100,7 +111,6 @@ python -c "from app.scheduler import run_scheduled_tasks; run_scheduled_tasks()"
 - `app/scrapers/`: Web scrapers to extract data from GitHub
   - `github_scraper.py`: Main scraper implementation
 - `app/templates/`: HTML templates for the web interface
-  - `base.html`: Base template with common elements
   - `index.html`: Home page template
   - `repository_detail.html`: Detailed repository view template
   - `history.html`: Template for viewing historical trending data
