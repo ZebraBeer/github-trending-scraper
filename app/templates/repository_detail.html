@@ -1,110 +1,96 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ repo.name }} - GitHub Trending</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        body { padding: 20px; }
-        .repo-header { margin-bottom: 20px; }
-        .repo-name a { font-weight: bold; color: #007bff; text-decoration: none; font-size: 1.5rem; }
-        .repo-name a:hover { text-decoration: underline; }
-        .repo-desc { margin-top: 5px; color: #666; }
-        .repo-stats span { margin-right: 20px; font-size: 0.9em; }
-        canvas {
-            max-width: 100% !important;
-            height: 400px !important; /* Set a fixed height for the chart */
-            width: 100% !important;   /* Ensure it takes full width of container */
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-8 offset-md-2">
-                <a href="{{ url_for('index') }}" class="btn btn-secondary mb-1">Back to list</a>
-<a href="{{ url_for('trending_history') }}" class="btn btn-info mb-3 ml-2">View Trending History</a>
-<a href="{{ url_for('trending_compare', repo1=repo.id) }}" class="btn btn-warning mb-3 ml-2">Compare with Other Repo</a>
+{% extends "base.html" %}
 
-                <div class="repo-header card p-4">
-                    <div class="repo-name"><a href="{{ repo.url }}" target="_blank">{{ repo.name }}</a></div>
-                    <div class="repo-desc">{{ repo.description }}</div>
-                    <div class="repo-stats mt-3">
-                        <span><strong>Language:</strong> {{ repo.language or 'Not specified' }}</span>
-                        <span><strong>Stars:</strong> {{ repo.stars }}</span>
-                        <span><strong>Forks:</strong> {{ repo.forks }}</span>
-                    </div>
+{% block title %}{{ repo.name }} - GitHub Trending{% endblock %}
+
+{% block content %}
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+    .repo-header { margin-bottom: 20px; }
+    .repo-name a { font-weight: bold; color: #007bff; text-decoration: none; font-size: 1.5rem; }
+    .repo-name a:hover { text-decoration: underline; }
+    .repo-desc { margin-top: 5px; color: #666; }
+    .repo-stats span { margin-right: 20px; font-size: 0.9em; }
+    canvas {
+        max-width: 100% !important;
+        height: 400px !important; /* Set a fixed height for the chart */
+        width: 100% !important;   /* Ensure it takes full width of container */
+    }
+</style>
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <a href="{{ url_for('index') }}" class="btn btn-secondary mb-1">Back to list</a>
+            <a href="{{ url_for('trending_history') }}" class="btn btn-info mb-3 ml-2">View Trending History</a>
+            <a href="{{ url_for('trending_compare', repo1=repo.id) }}" class="btn btn-warning mb-3 ml-2">Compare with Other Repo</a>
+
+            <div class="repo-header card p-4">
+                <div class="repo-name"><a href="{{ repo.url }}" target="_blank">{{ repo.name }}</a></div>
+                <div class="repo-desc">{{ repo.description }}</div>
+                <div class="repo-stats mt-3">
+                    <span><strong>Language:</strong> {{ repo.language or 'Not specified' }}</span>
+                    <span><strong>Stars:</strong> {{ repo.stars }}</span>
+                    <span><strong>Forks:</strong> {{ repo.forks }}</span>
                 </div>
+            </div>
 
-                {% if trend_data.dates|length > 0 %}
-                <h3 class="mt-4">Trending History</h3>
-                <canvas id="trendChart"></canvas>
-                <script>
-                    document.addEventListener('DOMContentLoaded', function () {
-                        const ctx = document.getElementById('trendChart').getContext('2d');
-                        new Chart(ctx, {
-                            type: 'line',
-                            data: {
-                                labels: {{ trend_data.dates|tojson }},
-                                datasets: [{
-                                    label: 'Stars',
-                                    data: {{ trend_data.stars|tojson }},
-                                    borderColor: '#28a745',
-                                    backgroundColor: 'rgba(40, 167, 69, 0.2)',
-                                    fill: true,
-                                    tension: 0.3
-                                }]
+            {% if trend_data.dates|length > 0 %}
+            <h3 class="mt-4">Trending History</h3>
+            <canvas id="trendChart"></canvas>
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    const ctx = document.getElementById('trendChart').getContext('2d');
+                    new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: {{ trend_data.dates|tojson }},
+                            datasets: [{
+                                label: 'Stars',
+                                data: {{ trend_data.stars|tojson }},
+                                borderColor: '#28a745',
+                                backgroundColor: 'rgba(40, 167, 69, 0.2)',
+                                fill: true,
+                                tension: 0.3
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: 'Stars Over Time'
+                                }
                             },
-                            options: {
-                                responsive: true,
-                                maintainAspectRatio: false,
-                                plugins: {
+                            scales: {
+                                x: {
+                                    display: true,
                                     title: {
                                         display: true,
-                                        text: 'Stars Over Time'
+                                        text: 'Date'
                                     }
                                 },
-                                scales: {
-                                    x: {
+                                y: {
+                                    display: true,
+                                    title: {
                                         display: true,
-                                        title: {
-                                            display: true,
-                                            text: 'Date'
-                                        }
+                                        text: 'Number of Stars'
                                     },
-                                    y: {
-                                        display: true,
-                                        title: {
-                                            display: true,
-                                            text: 'Number of Stars'
-                                        },
-                                        beginAtZero: true
-                                    }
+                                    beginAtZero: true
                                 }
                             }
-                        });
+                        }
                     });
-                </script>
-                {% else %}
-                <div class="alert alert-info mt-4">
-                    No trend data available for this repository yet. Check back later as we collect more data.
-                </div>
-                {% endif %}
+                });
+            </script>
+            {% else %}
+            <div class="alert alert-info mt-4">
+                No trend data available for this repository yet. Check back later as we collect more data.
+            </div>
+            {% endif %}
 
-                <div class="mt-5 text-center">
-                    <a href="{{ repo.url }}" target="_blank" class="btn btn-primary">View on GitHub</a>
-                </div>
+            <div class="mt-5 text-center">
+                <a href="{{ repo.url }}" target="_blank" class="btn btn-primary">View on GitHub</a>
             </div>
         </div>
     </div>
-
-    <!-- Bootstrap JS and dependencies -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
-</html>
