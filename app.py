@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, jsonify
 from sqlalchemy import create_engine, Column, Integer, String, Text, ForeignKey, Date
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, scoped_session
-from sqlalchemy.sql import func
+from sqlalchemy.sql import func, distinct as DISTINCT
 import os
 from datetime import datetime
 
@@ -142,7 +142,8 @@ def trending_history():
             selected_date = datetime.strptime(selected_date, '%Y-%m-%d').date()
 
             # Get repositories and their trend data for the selected date
-            query = session.query(Repository, Trend).join(
+            # Use DISTINCT to avoid duplicate entries
+            query = session.query(DISTINCT(Repository.id), Repository, Trend).join(
                 Trend, Repository.id == Trend.repository_id
             ).filter(Trend.date == selected_date)
         except ValueError:
@@ -162,9 +163,9 @@ def trending_history():
 
         query = session.query(Repository, Trend).join(
             Trend, Repository.id == Trend.repository_id
-        ).join(
-            subquery, (Trend.repository_id == subquery.c.repository_id) &
-                      (Trend.date == subquery.c.max_date)
+        ).filter(
+            Trend.date == subquery.c.max_date,
+            Trend.repository_id == subquery.c.repository_id
         )
 
     # Apply search filter if provided
