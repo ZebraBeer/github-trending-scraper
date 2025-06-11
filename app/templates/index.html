@@ -11,10 +11,16 @@
     .repo-stats span { margin-right: 15px; font-size: 0.9em; }
     .filter-form { margin-bottom: 20px; }
 </style>
-<h1 class="mb-4">GitHub Trending Repositories (Weekly)</h1>
+<h1 class="mb-4">GitHub Trending Repositories</h1>
 
 <div class="mb-3 text-right">
     <a href="{{ url_for('trending_history') }}" class="btn btn-info">View Trending History</a>
+</div>
+
+<!-- Star Counts Over Time Graph -->
+<div class="mb-4">
+    <h2>Star Counts Over Time</h2>
+    <canvas id="starChart" width="100%" height="30"></canvas>
 </div>
 
 <form method="GET" action="{{ url_for('index') }}" class="filter-form row">
@@ -65,13 +71,100 @@
 {% endif %}
 
 <div class="text-center mt-4">
-    <a href="https://github.com/trending?since=weekly" target="_blank" class="btn btn-secondary">View on GitHub</a>
+    <a href="https://github.com/trending" target="_blank" class="btn btn-secondary">View on GitHub</a>
 </div>
 {% endblock %}
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <!-- Bootstrap JS and dependencies -->
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get the trend data from the template
+        const trendsByDate = {{ trends_by_date|tojson }};
+        const repositories = {{ repositories|tojson }};
+
+        if (Object.keys(trendsByDate).length === 0 || repositories.length === 0) {
+            return; // No data to display
+        }
+
+        // Extract dates and create a mapping of repo IDs to names
+        const dates = Object.keys(trendsByDate).sort();
+        const repoMap = {};
+        repositories.forEach(repo => {
+            repoMap[repo.id] = repo.name;
+        });
+
+        // Prepare datasets for the chart
+        const datasets = [];
+        for (const [repoId, repoName] of Object.entries(repoMap)) {
+            const data = dates.map(date => trendsByDate[date][repoId] || 0);
+            datasets.push({
+                label: repoName,
+                data: data,
+                borderColor: getRandomColor(),
+                fill: false
+            });
+        }
+
+        // Create the chart
+        const ctx = document.getElementById('starChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: dates,
+                datasets: datasets
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                title: {
+                    display: true,
+                    text: 'Star Counts Over Time'
+                },
+                tooltips: {
+                    mode: 'index',
+                    intersect: false
+                },
+                hover: {
+                    mode: 'nearest',
+                    intersect: true
+                },
+                scales: {
+                    x: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        }
+                    },
+                    y: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Stars'
+                        },
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    });
+
+    // Function to generate random colors for chart lines
+    function getRandomColor() {
+        const letters = '0123456789ABCDEF';
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+</script>
 </body>
 </html>
