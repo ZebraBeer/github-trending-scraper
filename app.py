@@ -41,13 +41,45 @@ def index():
         query = query.filter(Repository.language == language_filter)
 
     repositories = query.all()
+
+    # Get trend data for all repositories
+    repo_ids = [repo.id for repo in repositories]
+    trends_by_date = {}
+
+    if repo_ids:
+        # Get all trend dates for these repositories
+        date_query = session.query(
+            Trend.date.distinct()
+        ).filter(Trend.repository_id.in_(repo_ids)).order_by(Trend.date.asc()).all()
+
+        # For each date, get the star counts for all repositories
+        for date in date_query:
+            date_str = date[0].strftime('%Y-%m-%d')
+            trends_by_date[date_str] = {}
+
+            # Get trend data for this date
+            trend_query = session.query(
+                Trend.repository_id,
+                Trend.stars
+            ).filter(
+                Trend.date == date[0],
+                Trend.repository_id.in_(repo_ids)
+            ).all()
+
+            # Organize by repository ID
+            for repo_id, stars in trend_query:
+                trends_by_date[date_str][repo_id] = stars
+
     session.close()
 
     # Get unique languages for filter dropdown
     languages = session.query(Repository.language).distinct().all()
     languages = sorted([lang[0] for lang in languages if lang[0] is not None])
 
-    return render_template('index.html', repositories=repositories, languages=languages)
+    return render_template('index.html',
+                           repositories=repositories,
+                           languages=languages,
+                           trends_by_date=trends_by_date)
 
 @app.route('/repository/<int:repo_id>')
 def repository_detail(repo_id):
@@ -142,10 +174,16 @@ def trending_history():
             selected_date = datetime.strptime(selected_date, '%Y-%m-%d').date()
 
             # Get repositories and their trend data for the selected date
-            # Use DISTINCT to avoid duplicate entries
-            query = session.query(DISTINCT(Repository.id), Repository, Trend).join(
+            subquery = session.query(
+                Trend.repository_id,
+                func.max(Trend.id).label('max_trend_id')
+            ).filter(Trend.date == selected_date).group_by(Trend.repository_id).subquery()
+
+            query = session.query(Repository).join(
                 Trend, Repository.id == Trend.repository_id
-            ).filter(Trend.date == selected_date)
+            ).filter(
+                Trend.id == subquery.c.max_trend_id
+            )
         except ValueError:
             # If date format is invalid, show all repositories with trends
             return render_template('history.html',
@@ -161,7 +199,7 @@ def trending_history():
             func.max(Trend.date).label('max_date')
         ).group_by(Trend.repository_id).subquery()
 
-        query = session.query(Repository, Trend).join(
+        query = session.query(Repository).join(
             Trend, Repository.id == Trend.repository_id
         ).filter(
             Trend.date == subquery.c.max_date,
@@ -185,9 +223,35 @@ def trending_history():
             min_stars_int = int(min_stars)
             query = query.filter(Trend.stars >= min_stars_int)
         except ValueError:
-            pass  # Invalid value, ignore
+            pass  # Ignore invalid values
 
     repositories = query.all()
+
+    # Now get the trend data for these repositories
+    repo_ids = [repo.id for repo in repositories]
+    trends = {}
+
+    if selected_date:
+        trend_query = session.query(Trend).filter(
+            Trend.repository_id.in_(repo_ids),
+            Trend.date == selected_date
+        ).all()
+    else:
+        # Get the most recent trend for each repository
+        trend_subquery = session.query(
+            Trend.repository_id,
+            func.max(Trend.date).label('max_date')
+        ).filter(Trend.repository_id.in_(repo_ids)).group_by(Trend.repository_id).subquery()
+
+        trend_query = session.query(Trend).join(
+            trend_subquery,
+            (Trend.repository_id == trend_subquery.c.repository_id) &
+            (Trend.date == trend_subquery.c.max_date)
+        ).all()
+
+    # Organize trends by repository ID
+    for trend in trend_query:
+        trends[trend.repository_id] = trend
 
     # Get all unique dates with trend data for the dropdown filter
     dates = session.query(Trend.date.distinct()).order_by(Trend.date.desc()).all()
@@ -201,6 +265,7 @@ def trending_history():
 
     return render_template('history.html',
                           repositories=repositories,
+                          trends=trends,  # Pass trends separately
                           selected_date=selected_date,
                           date_options=date_options,
                           search_query=search_query,
