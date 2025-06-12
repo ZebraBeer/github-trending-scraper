@@ -21,5 +21,11 @@ COPY . /app
 # Make port 8000 available for the app
 EXPOSE 8000
 
+# Create database directory if it doesn't exist and set proper permissions
+RUN mkdir -p /app/db && chmod 777 /app/db
+
+# Initialize the database
+RUN python -c "from app.database import engine; from app.models.repository import Repository, Base; Base.metadata.create_all(engine)"
+
 # Run the application
-CMD ["python", "app.py"]
+CMD ["python", "-m", "app.main"]
