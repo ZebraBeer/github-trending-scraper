@@ -17,6 +17,8 @@ This is a web application that scrapes and displays trending repositories from G
 
 ## Setup Instructions
 
+**Note:** If you encounter a Server Error 500 when running the application, it's likely due to database path issues. Make sure you're using the correct database path in `app/database.py` and that the directory exists with proper permissions.
+
 ### Using Docker Compose (Recommended)
 
 The easiest way to run this application is using Docker Compose:
@@ -72,13 +74,13 @@ If you prefer not to use Docker, follow these steps:
 
    Using Flask CLI:
    ```bash
-   export FLASK_APP=app.main
+   export FLASK_APP=app.py
    flask run --host=0.0.0.0 --port=8000
    ```
 
    Or directly with Python:
    ```bash
-   python -m app.main
+   python app.py
    ```
 
 5. **Access the application:**

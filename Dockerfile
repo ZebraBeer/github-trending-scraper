@@ -28,4 +28,4 @@ RUN mkdir -p /app/db && chmod 777 /app/db
 RUN python -c "from app.database import engine; from app.models.repository import Repository, Base; Base.metadata.create_all(engine)"
 
 # Run the application
-CMD ["python", "-m", "app.main"]
+CMD ["python", "app.py"]
