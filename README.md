@@ -36,6 +36,8 @@ The easiest way to run this application is using Docker Compose:
 
 3. **Access the application:**
 
+   If you encounter a "Server Error 500" after starting with Docker, it's likely due to database initialization issues. The Dockerfile now includes steps to create the database directory and initialize the database schema.
+
    Open your browser and go to http://localhost:8000
 
 ### Manual Setup (Without Docker)
@@ -70,13 +72,13 @@ If you prefer not to use Docker, follow these steps:
 
    Using Flask CLI:
    ```bash
-   export FLASK_APP=app.py
+   export FLASK_APP=app.main
    flask run --host=0.0.0.0 --port=8000
    ```
 
    Or directly with Python:
    ```bash
-   python app.py
+   python -m app.main
    ```
 
 5. **Access the application:**
@@ -104,7 +106,7 @@ python -c "from app.scheduler import run_scheduled_tasks; run_scheduled_tasks()"
 
 ## Project Structure
 
-- `app.py`: Main Flask application
+- `app/main.py`: Main Flask application
 - `app/models/`: Database models (Repository, Trend)
   - `repository.py`: Repository model definition
   - `trend.py`: Trend data model definition
